@@ -122,6 +122,46 @@ df.to_sql(
 
 ---
 
+## 🐳 Infraestrutura e Orquestração
+
+### 1. Docker (Containerização)
+O projeto é totalmente isolado utilizando containers Docker, garantindo que o pipeline funcione em qualquer máquina sem conflitos de dependência.
+- **Serviços:** O `docker-compose.yaml` orquestra múltiplos serviços simultaneamente: Airflow (Webserver, Scheduler, Triggerer) e o banco de dados PostgreSQL.
+- **Persistência de Dados:** Utilizamos volumes Docker para garantir que os dados do banco (`postgres-db-volume`) não sejam perdidos ao reiniciar os containers.
+- **Networking:** Configuração de rede interna para permitir a comunicação direta entre o Airflow e o Postgres.
+
+### 2. Apache Airflow (Orquestração)
+O gerenciamento do fluxo de dados é feito pelo Airflow.
+- **TaskFlow API:** O código utiliza a abordagem moderna do Airflow 2.0+ (`@dag`, `@task`), tornando o código mais limpo e legível.
+- **Dependências:** O fluxo é linear (`extract` >> `transform` >> `load`), garantindo que uma etapa só inicie se a anterior for concluída com sucesso.
+- **Idempotência:** O pipeline foi desenhado para rodar múltiplas vezes sem quebrar, apenas adicionando novos registros históricos.
+
+---
+
+## ⚙️ Como Executar
+
+### 1. Pré-requisitos
+- **Docker** e **Docker Compose** instalados na máquina.
+- Uma **API Key da Steam** (você pode obter gratuitamente [aqui](https://steamcommunity.com/dev/apikey)).
+
+### 2. Configuração do Ambiente
+
+Crie um arquivo chamado `.env` dentro da pasta `config/` e preencha com suas credenciais:
+
+```env
+# Configurações da API Steam
+API_KEY=sua_chave_aqui
+
+# Configurações do Banco de Dados (Postgres)
+# Nota: 'host.docker.internal' permite que o container acesse o host/outros serviços
+DB_HOST=host.docker.internal
+DB_NAME=steam_data
+DB_USER=airflow
+DB_PASS=airflow
+DB_PORT=5432
+
+---
+
 ## 📌 Referência
 
 Este projeto foi inspirado em um conteúdo do canal [**vbluuiza**](https://youtu.be/I8qPqbXQBDU?si=lbhwEALHXY7vN4NN) e adaptado para fins de aprendizado.
