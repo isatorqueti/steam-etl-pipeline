@@ -1,0 +1,134 @@
+# 📉 Steam Data Pipeline 
+
+Pipeline ETL *end-to-end* para ingestão, transformação e análise histórica dos jogos mais populares da Steam usando **Python**, **Apache Airflow**, **Docker** e **PostgreSQL**.
+
+---
+
+## 📖 Visão Geral
+
+O objetivo deste projeto é monitorar tendências de jogos em tempo real, criando um histórico ("série temporal") para analisar quais jogos estão ganhando ou perdendo popularidade.
+
+- **Extração:** Coleta dados da API oficial da Steam.
+- **Transformação:** Limpeza, normalização e *timestamping* dos dados.
+- **Carga:** Insere os dados processados em um banco PostgreSQL.
+- **Orquestração:** Todo o fluxo é automatizado via **Apache Airflow**.
+
+---
+
+## 🗂️ Estrutura do Projeto
+
+```text
+steam-etl-pipeline/
+├── config/                # Configurações do pipeline (ignorado pelo git)
+│   └── .env               
+├── dags/                  # Diretório mapeado para o Airflow
+│   ├── steam_dag.py       
+├── data/                  # Dados extraídos (ignorado pelo git)
+├── logs/                  # Logs do Airflow (ignorado pelo git)
+├── plugins/               # Plugins do Airflow (ignorado pelo git)
+├── notebooks/             # Notebook de análise e exploração
+├── src/                   # Código fonte do ETL
+│   ├── extract_data.py
+│   ├── transform_data.py
+│   └── load_data.py
+├── .env                   
+├── docker-compose.yaml    # Orquestração dos containers
+├── main.py                # Usado para testar o pipeline
+└── README.md
+
+## 🧩 Principais Arquivos
+
+- `dags/steam_dag.py`: DAG principal do Airflow
+- `src/extract_data.py`: Função de extração da API
+- `src/transform_data.py`: Funções de transformação
+- `src/load_data.py`: Função de carga no PostgreSQL
+- `main.py`: Execução manual do pipeline
+
+---
+
+## 🔍 Detalhamento das Etapas
+
+### 📥 **ETAPA 1: EXTRACT**
+
+**Arquivo:** [`src/extract_data.py`](src/extract_data.py)
+
+**O que faz:**
+1. Realiza requisições GET para os endpoints da Steam Web API:
+- ISteamChartsService/GetGamesByConcurrentPlayers (Ranking)
+- IStoreService/GetAppList (Nomes dos Jogos)
+2. Salva os dados brutos em formato JSON na pasta dags/data/.
+
+**Dados coletados:**
+- Rank atual
+- ID do Jogo (AppID)
+- Número de jogadores simultâneos
+- Pico de jogadores nas últimas 24h
+
+---
+
+### 🔄 **ETAPA 2: TRANSFORM**
+
+**Arquivo:** [`src/transform_data.py`](src/transform_data.py)
+
+**O que faz:**
+
+#### 2.1 **Criação dos DataFrames**
+- Lê os arquivos JSON
+- Converte para DataFrame Pandas
+
+#### 2.2 **Merge e Limpeza**
+- Cruza as informações do Ranking com a lista de Apps (merge via appid).
+- Remove colunas desnecessárias para a análise (ex: last_modified, price_change_number).
+- Renomeia as colunas para padronização de nomes claros.
+
+#### 2.3 **Tratamento de dados Nulos**
+- Para 'game_title' null, utilizamos "Desconhecido".
+
+#### 2.4 **Criação de Série Temporal**
+- Adiciona a coluna 'extracted_at' com data/hora atual.
+
+**Resultado:** DataFrame limpo, estruturado e pronto para análise
+
+---
+
+### 💾 **ETAPA 3: LOAD**
+
+**Arquivo:** [`src/load_data.py`](src/load_data.py)
+
+**O que faz:**
+
+#### 3.1 **Conexão com o banco de dados**
+```python
+engine = create_engine(
+    f"postgresql+psycopg2://{user}:{password}@{host}:5432/{database}"
+)
+```
+
+#### 3.2 **Inserção dos dados**
+```python
+df.to_sql(
+        name=table_name,
+        con=engine,
+        if_exists='append',
+        index=False
+    )
+```
+
+#### 3.3 **Validação**
+- Faz um `SELECT COUNT(*)` para verificar total de registros
+- Loga o resultado para auditoria
+
+
+---
+
+## 📌 Referência
+
+Este projeto foi inspirado em um conteúdo do canal [**vbluuiza**](https://youtu.be/I8qPqbXQBDU?si=lbhwEALHXY7vN4NN) e adaptado para fins de aprendizado.
+
+---
+
+## 👩‍💻 Desenvolvido por
+
+- **Nome:** Isadora Torqueti
+- **GitHub:** https://github.com/isatorqueti
+- **Linkedin:** https://www.linkedin.com/in/isadoratorqueti/
