@@ -15,6 +15,12 @@ O objetivo deste projeto é monitorar tendências de jogos em tempo real, criand
 
 ---
 
+## 🏗️ Arquitetura do Pipeline
+
+<img src='arquitetura_de_dados_draw.png' alt='Arquitetura do Pipeline ETL'>
+
+---
+
 ## 🛠️ Stack Tecnológica
 
 ### Core
