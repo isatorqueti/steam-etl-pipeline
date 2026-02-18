@@ -15,6 +15,28 @@ O objetivo deste projeto é monitorar tendências de jogos em tempo real, criand
 
 ---
 
+## 🛠️ Stack Tecnológica
+
+### Core
+- **Python 3.14+** - Linguagem principal
+- **Apache Airflow 3.1.7** - Orquestração do pipeline
+- **PostgreSQL 14** - Banco de dados relacional
+- **Docker & Docker Compose** - Containerização
+
+### Bibliotecas Python
+- **pandas** - Manipulação e transformação de dados
+- **requests** - Requisições HTTP para a API
+- **SQLAlchemy** - ORM para interação com o banco de dados
+- **psycopg2** - Driver PostgreSQL
+- **python-dotenv** - Gerenciamento de variáveis de ambiente
+
+### Outras Ferramentas
+- **Redis** - Message broker para Celery
+- **Jupyter Notebook** - Análise exploratória de dados
+- **UV** - Gerenciador de pacotes Python rápido
+
+---
+
 ## 🗂️ Estrutura do Projeto
 
 ```text
@@ -159,6 +181,7 @@ DB_NAME=steam_data
 DB_USER=airflow
 DB_PASS=airflow
 DB_PORT=5432
+```
 
 ---
 
