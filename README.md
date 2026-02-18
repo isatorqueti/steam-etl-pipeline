@@ -35,6 +35,7 @@ steam-etl-pipeline/
 ├── docker-compose.yaml    # Orquestração dos containers
 ├── main.py                # Usado para testar o pipeline
 └── README.md
+```
 
 ## 🧩 Principais Arquivos
 
