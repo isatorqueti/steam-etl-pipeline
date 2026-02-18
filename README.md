@@ -18,9 +18,9 @@ O objetivo deste projeto é monitorar tendências de jogos em tempo real, criand
 ## 🛠️ Stack Tecnológica
 
 ### Core
-- **Python 3.14+** - Linguagem principal
-- **Apache Airflow 3.1.7** - Orquestração do pipeline
-- **PostgreSQL 14** - Banco de dados relacional
+- **Python** - Linguagem principal
+- **Apache Airflow** - Orquestração do pipeline
+- **PostgreSQL** - Banco de dados relacional
 - **Docker & Docker Compose** - Containerização
 
 ### Bibliotecas Python
@@ -182,6 +182,22 @@ DB_USER=airflow
 DB_PASS=airflow
 DB_PORT=5432
 ```
+### 3. Inicialização
+
+Na raiz do projeto, abra o terminal e execute:
+
+```bash
+# Sobe os containers em segundo plano (Detached mode)
+docker-compose up -d
+```
+
+### 4. Acessando o Projeto
+1.  Aguarde alguns instantes para a inicialização completa dos serviços.
+2.  Acesse a interface do Airflow em: [http://localhost:8080](http://localhost:8080)
+3.  Faça login com as credenciais padrão:
+    - **Usuário:** `airflow`
+    - **Senha:** `airflow`
+4.  Localize a DAG **`steam_pipeline`**, ative o botão (Unpause/Toggle Azul) e dispare a execução (Trigger/Play ▶️).
 
 ---
 
