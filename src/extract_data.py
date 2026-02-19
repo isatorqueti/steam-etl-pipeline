@@ -5,8 +5,6 @@ from pathlib import Path
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-api_key = '829B80D4656DCC68006DC10D8826D063'
-
 def extract_ranking(url:str, filename:str) -> list:
     
     response = requests.get(url)
@@ -68,10 +66,3 @@ def extract_apps(url_apps:str, filename:str) -> list:
 
     logging.info(f"Arquivo salvo em {output_path}")
     return final_data_apps
-
-if __name__ == '__main__':
-    url_ranking = f'https://api.steampowered.com/ISteamChartsService/GetGamesByConcurrentPlayers/v1/?key={api_key}'
-    extract_ranking(url_ranking, "steam_ranking.json")
-
-    url_apps = f'https://api.steampowered.com/IStoreService/GetAppList/v1/?key={api_key}&include_games=true'
-    extract_apps(url_apps, "steam_apps.json")
